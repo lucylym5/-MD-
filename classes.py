@@ -11,6 +11,7 @@ class MDParameters:
     natom: int          # 原子总数
     mass: float         # 原子摩尔质量
     geo_dir: str        # 构型文件路径
+    read_velocity: str
     rcut: float         # 势的阶段半径
     neighbor_r: float   # 近邻表额外截断半径
     neighbor_n: int     # 最大近邻原子数
@@ -26,6 +27,12 @@ class MDParameters:
     tau: float
     nraise: int
     thermotstat: int      # 恒温器类型
+    cal_rdf: int
+    rdf_rcut: float       # 绘制 rdf 的距离范围
+    rdf_dr: float
+    rdf_start: int        
+    rdf_stop: int
+    rdf_interval: int       # 计算rdf步长
 
     # 计算Verlet搜索半径
     @property  # 把方法变得“看起来像属性”，调用时不需要写圆括号。（没有额外保存一个值）
@@ -39,11 +46,14 @@ class MDParameters:
             natom = int(parameters["natom"]),
             mass = float(parameters["mass"]),
             geo_dir = str(parameters["geo_dir"]),
+            read_velocity = str(parameters["read_velocity"]),
+
             rcut = float(parameters["rcut"]),
             neighbor_r = float(parameters["neighbor_r"]),
             neighbor_n = int(parameters["neighbor_n"]),
             epsilon = float(parameters["epsilon"]),
             sigma = float(parameters["sigma"]),
+
             dt = float(parameters["dt"]),
             nstep = int(parameters["nstep"]),
             step_out = int(parameters["step_out"]),
@@ -54,6 +64,13 @@ class MDParameters:
             tau = float(parameters["tau"]),
             nraise = int(parameters["nraise"]),
             thermotstat = int(parameters["thermotstat"]),
+
+            cal_rdf = int(parameters["cal_rdf"]),
+            rdf_rcut = float(parameters["rdf_rcut"]),
+            rdf_dr = float(parameters["rdf_dr"]),
+            rdf_start = int(parameters["rdf_start"]),        
+            rdf_stop = int(parameters["rdf_stop"]),
+            rdf_interval = int(parameters["rdf_interval"]), 
         )
 
 

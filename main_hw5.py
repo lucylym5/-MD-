@@ -7,15 +7,16 @@ from classes import Atomsystem, MDParameters            # 导入参数类和原�
 from read import read_geometry, read_input              # 导入读取函数
 from neighbor_list import build_neighbor_list           # 建立初始近邻表
 from potential import calculate_lj, lj_stress_tensor    # 计算第0步物理量
-from dynamics import velocity_verlet_step, Ekinetic_and_T
+from dynamics import initialize_velocities, velocity_verlet_step, Ekinetic_and_T
 from thermotstat import berendsen_thermotstat, andersen_thermotstat
 
 import output as op
 
+SEED = 2026
 
 def main():
     base_path = Path(__file__).resolve().parent
-    input_file = base_path / "input.in"
+    input_file = base_path / "input_rdf.in"
     parameters_dict = read_input(input_file)
     base_parameters = MDParameters.from_input(parameters_dict)
 
@@ -25,7 +26,10 @@ def main():
 
         # 每次重新读取初始构型和速度
         geo_file = base_path / parameters.geo_dir
-        cell, position_table, velocity_table = read_geometry(geo_file)
+        cell, position_table, velocity_table = read_geometry(
+            geo_file, 
+            parameters.read_velocity,
+        )
         atoms = Atomsystem.from_geometry(
             cell,
             position_table,
@@ -33,7 +37,14 @@ def main():
             parameters.natom,
             parameters.neighbor_n,
         )
-        rng = np.random.default_rng(2026)
+        if parameters.read_velocity == "n":
+            initialize_velocities(
+                atoms,
+                parameters,
+                SEED,
+            ) 
+
+        rng = np.random.default_rng(SEED)
 
         # 两种热库的结果分别保存到项目根目录下的不同文件夹。
         result_dir = base_path / f"result_{name}"

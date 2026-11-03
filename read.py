@@ -3,7 +3,7 @@ from io import StringIO
 import pandas as pd
 import numpy as np
 
-def read_geometry(geo_file: str | Path)-> tuple[np.ndarray, pd.DataFrame, pd.DataFrame]:
+def read_geometry(geo_file: str | Path, read_velocity)-> tuple[np.ndarray, pd.DataFrame, pd.DataFrame]:
     geo_file = Path(geo_file)
     
     # （按行）读取文件为列表
@@ -43,6 +43,12 @@ def read_geometry(geo_file: str | Path)-> tuple[np.ndarray, pd.DataFrame, pd.Dat
         header = None,
         names = ["element","x","y","z"]
     )
+
+    # 不读取初始速度时，初始化为 0
+    if read_velocity == "n":
+        velocity = position.copy()
+        velocity[["x", "y", "z"]] = 0.0
+        return cell, position, velocity
 
     # 找到速度参数
     velocity_start = next(

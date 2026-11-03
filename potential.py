@@ -115,7 +115,8 @@ def lj_stress_tensor(
     thermal_velocities = velocities - center_of_mass_velocity
 
     kinetic_tensor = (
-        1.036426965e-4        # 单位换算
+        1.036426965e-4                       # 单位换算
+        * atoms.natom / (atoms.natom - 1)    # 自由度修正
         * np.einsum(
             "i,ia,ib->ab",    # 用爱因斯坦求和约定 做张量计算
             masses_amu,
