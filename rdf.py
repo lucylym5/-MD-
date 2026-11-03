@@ -23,14 +23,12 @@ class RDFAccumulator:
 def initialize_rdf(
         parameters: MDParameters,
 ) -> RDFAccumulator:
-    RDFprepare = RDFAccumulator()
-
-    n = parameters.rdf_rcut / parameters.rdf_dr
+    n = int(parameters.rdf_rcut / parameters.rdf_dr)
     edges = np.linspace(0.0, parameters.rdf_rcut, n + 1)    # linspace 默认首尾都包含
     centers = 0.5 * (edges[:-1] + edges[1:])                # 中心：内外边界平均值
     counts = np.zeros(n, dtype=np.int64)
 
-    return RDFprepare(
+    return RDFAccumulator(
         edges = edges,
         centers = centers, 
         counts = counts,
@@ -59,12 +57,13 @@ def accumulate_rdf(
                     np.dot(displacement, displacement)
                 )
                 
-                if distance2 <= rcut2:
+                if distance2 < rcut2:
                     bin_index = int(np.sqrt(distance2) / dr)
-                    state.count[bin_index] += 2
+                    state.counts[bin_index] += 2
     else:
         for i in range(atoms.natom):
-            for j in atoms.neighbor_list[i]:
+            for j in atoms.output_neighbors(i):
+                j = int(j)
                 displacement = minimum_displacement(
                     atoms.positions[j] - atoms.positions[i],
                     atoms.cell,
@@ -74,13 +73,13 @@ def accumulate_rdf(
                     np.dot(displacement, displacement)
                 )
                                 
-                if distance2 <= rcut2:
+                if distance2 < rcut2:
                     bin_index = int(np.sqrt(distance2) / dr)
-                    state.count[bin_index] += 1
+                    state.counts[bin_index] += 1
 
-    state.nframe += 1
+    state.nframes += 1
 
-""" 将计数转换为g(r) """
+""" 将计数归一化为g(r) """
 def finalize_rdf(
         state: RDFAccumulator, 
         atoms: Atomsystem,
@@ -90,7 +89,7 @@ def finalize_rdf(
     volume = abs(np.linalg.det(atoms.cell))
     density = atoms.natom / volume
     shell_volume = 4/3 * np.pi * (state.edges[1:]**3 - state.edges[:-1]**3)
-    g_r = state.counts / (state.nframes * density * shell_volume)
+    g_r = state.counts / (state.nframes * atoms.natom * density * shell_volume)
 
     return r, g_r
 
