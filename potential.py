@@ -124,7 +124,7 @@ def lj_stress_tensor(
         )
     )
  
-    stress = (                        # 单位：eV/A^3
+    stress = -(                        # 单位：eV/A^3
         kinetic_tensor + virial_tensor
     ) / volume
 

@@ -4,7 +4,7 @@ from classes import Atomsystem, MDParameters
 from dynamics import BOLTZMANN_CONSTANT, UNIT_KINETIC_TO_EV
 
 """根据当前温度，缩放 atoms.velocities""" 
-def berendsen_thermostat(atoms, parameters, current_temperature):
+def berendsen_thermotstat(atoms, parameters, current_temperature):
     dt = parameters.dt
     tau = parameters.tau
     target_T = parameters.ensamble_T
@@ -38,7 +38,7 @@ def gaussian_random(
 
 
 """随机选择发生碰撞的原子，原地更新其速度"""
-def andersen_thermostat(atoms, parameters, rng):
+def andersen_thermotstat(atoms, parameters, rng):
     # nraise：每个原子两次碰撞间平均步数  p_collision：每一步碰撞概率
     p_collision = 1 / parameters.nraise     
 

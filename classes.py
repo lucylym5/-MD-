@@ -25,7 +25,7 @@ class MDParameters:
     ensamble_T: float
     tau: float
     nraise: int
-    thermostat: int      # 恒温器类型
+    thermotstat: int      # 恒温器类型
 
     # 计算Verlet搜索半径
     @property  # 把方法变得“看起来像属性”，调用时不需要写圆括号。（没有额外保存一个值）
@@ -53,7 +53,7 @@ class MDParameters:
             ensamble_T = float(parameters["ensamble_T"]),
             tau = float(parameters["tau"]),
             nraise = int(parameters["nraise"]),
-            thermostat = int(parameters["thermostat"]),
+            thermotstat = int(parameters["thermotstat"]),
         )
 
 
